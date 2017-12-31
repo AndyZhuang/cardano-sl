@@ -32,7 +32,7 @@ import           Pos.Wallet.Web.ClientTypes (AccountId (..), Addr, CId, CTx (..)
                                              CTxMeta (..), CWAddressMeta (..), Wal, mkCTx)
 import           Pos.Wallet.Web.Error       (WalletError (..))
 import           Pos.Wallet.Web.Mode        (MonadWalletWebMode, convertCIdTOAddrs)
-import           Pos.Wallet.Web.Pending     (PendingTx (..), ptxPoolInfo)
+import           Pos.Wallet.Web.Pending     (PendingTx (..), _PtxApplying)
 import           Pos.Wallet.Web.State       (AddressLookupMode (Ever), addOnlyNewTxMetas,
                                              getHistoryCache, getPendingTx, getTxMeta,
                                              getWalletPendingTxs, setWalletTxMeta)
@@ -211,7 +211,7 @@ addRecentPtxHistory wid currentHistory = do
   where
     toCandidates =
             txHistoryListToMap
-        .   mapMaybe (ptxPoolInfo . _ptxCond)
+        .   mapMaybe (preview _PtxApplying . _ptxCond)
         .   fromMaybe []
 
 -- FIXME: use @listChunkedJson k@ with appropriate @k@s, once available,
